@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Статус</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --on-green: #00ff88;
+      --off-red: #ff2244;
+      --bg-dark: #0a0a0f;
+      --text: #e8e8f0;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg-dark);
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ── GRID SCANLINES ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(255,255,255,.018) 2px,
+          rgba(255,255,255,.018) 4px
+        );
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* ── LAYOUT ── */
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 0;
+      position: relative;
+    }
+
+    /* ── TOP LABEL ── */
+    .label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: rgba(232,232,240,.45);
+      margin-bottom: 18px;
+      user-select: none;
+    }
+
+    /* ── STATUS TEXT ── */
+    .status-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 18vw, 13rem);
+      letter-spacing: .1em;
+      line-height: 1;
+      position: relative;
+      z-index: 2;
+      transition: color .5s ease, text-shadow .5s ease;
+    }
+
+    /* ── LINE WRAPPER (sits between label and buttons) ── */
+    .line-wrap {
+      width: 100%;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 32px 0;
+      position: relative;
+      overflow: visible;
+    }
+
+    /* ── GREEN LINE (ON) ── */
+    .line-on {
+      display: none;
+      width: 100%;
+      height: 5px;
+      background: var(--on-green);
+      box-shadow:
+        0 0 8px var(--on-green),
+        0 0 24px var(--on-green),
+        0 0 60px rgba(0,255,136,.35);
+      border-radius: 3px;
+      animation: pulse-line 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-line {
+      0%, 100% { box-shadow: 0 0 8px var(--on-green), 0 0 24px var(--on-green), 0 0 60px rgba(0,255,136,.35); }
+      50%       { box-shadow: 0 0 14px var(--on-green), 0 0 48px var(--on-green), 0 0 100px rgba(0,255,136,.55); }
+    }
+
+    /* ── RED WAVE SVG (OFF) ── */
+    .wave-wrap {
+      display: none;
+      width: 100%;
+      height: 80px;
+      position: relative;
+    }
+
+    .wave-wrap svg {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      filter: drop-shadow(0 0 10px var(--off-red)) drop-shadow(0 0 28px rgba(255,34,68,.5));
+    }
+
+    .wave-path {
+      animation: wave-anim 1.8s ease-in-out infinite;
+    }
+
+    @keyframes wave-anim {
+      0%   { d: path("M0,40 C160,10 320,70 480,40 C640,10 800,70 960,40 C1120,10 1280,70 1440,40 L1440,40 L0,40 Z"); }
+      25%  { d: path("M0,40 C160,70 320,10 480,40 C640,70 800,10 960,40 C1120,70 1280,10 1440,40 L1440,40 L0,40 Z"); }
+      50%  { d: path("M0,40 C160,5  320,75 480,40 C640,5  800,75 960,40 C1120,5  1280,75 1440,40 L1440,40 L0,40 Z"); }
+      75%  { d: path("M0,40 C160,75 320,5  480,40 C640,75 800,5  960,40 C1120,75 1280,5  1440,40 L1440,40 L0,40 Z"); }
+      100% { d: path("M0,40 C160,10 320,70 480,40 C640,10 800,70 960,40 C1120,10 1280,70 1440,40 L1440,40 L0,40 Z"); }
+    }
+
+    /* ── BUTTONS ── */
+    .btn-row {
+      display: flex;
+      gap: 20px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .95rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: 12px 32px;
+      border: 2px solid currentColor;
+      background: transparent;
+      cursor: pointer;
+      transition: background .2s, color .2s, box-shadow .2s;
+      text-decoration: none;
+      color: rgba(232,232,240,.5);
+    }
+
+    .btn:hover { background: rgba(255,255,255,.07); color: var(--text); }
+
+    .btn-on  { color: var(--on-green); border-color: var(--on-green); }
+    .btn-on:hover  { background: rgba(0,255,136,.1); box-shadow: 0 0 18px rgba(0,255,136,.3); }
+
+    .btn-off { color: var(--off-red); border-color: var(--off-red); }
+    .btn-off:hover { background: rgba(255,34,68,.1); box-shadow: 0 0 18px rgba(255,34,68,.3); }
+
+    .btn.active-on  { background: rgba(0,255,136,.15); box-shadow: 0 0 28px rgba(0,255,136,.4); }
+    .btn.active-off { background: rgba(255,34,68,.15); box-shadow: 0 0 28px rgba(255,34,68,.4); }
+
+    /* ── URL HINT ── */
+    .hint {
+      margin-top: 36px;
+      font-size: .72rem;
+      letter-spacing: .1em;
+      color: rgba(232,232,240,.22);
+    }
+
+    /* ── STATE: ON ── */
+    body.state-on  .status-text { color: var(--on-green); text-shadow: 0 0 20px var(--on-green), 0 0 60px rgba(0,255,136,.4); }
+    body.state-on  .line-on     { display: block; }
+    body.state-on  .btn-on      { pointer-events: none; opacity: .5; }
+
+    /* ── STATE: OFF ── */
+    body.state-off .status-text { color: var(--off-red);  text-shadow: 0 0 20px var(--off-red),  0 0 60px rgba(255,34,68,.4); }
+    body.state-off .wave-wrap   { display: block; }
+    body.state-off .btn-off     { pointer-events: none; opacity: .5; }
+
+    /* ── DEFAULT (no param) ── */
+    body.state-none .status-text { color: rgba(232,232,240,.3); }
+
+    /* ── BACKGROUND GLOW ── */
+    .glow {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity .8s ease;
+      opacity: 0;
+    }
+    body.state-on  .glow { background: radial-gradient(ellipse 80% 40% at 50% 50%, rgba(0,255,136,.07) 0%, transparent 70%); opacity: 1; }
+    body.state-off .glow { background: radial-gradient(ellipse 80% 40% at 50% 50%, rgba(255,34,68,.07) 0%, transparent 70%); opacity: 1; }
+  </style>
+</head>
+<body class="state-none">
+
+  <div class="glow"></div>
+
+  <div id="app">
+    <div class="label">Статус системы</div>
+
+    <div class="status-text" id="statusText">—</div>
+
+    <div class="line-wrap">
+      <div class="line-on"></div>
+      <div class="wave-wrap">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="wave-path"
+            d="M0,40 C160,10 320,70 480,40 C640,10 800,70 960,40 C1120,10 1280,70 1440,40"
+            fill="none"
+            stroke="#ff2244"
+            stroke-width="4"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <a class="btn btn-on"  id="btnOn"  href="?status=on">[ ON ]</a>
+      <a class="btn btn-off" id="btnOff" href="?status=off">[ OFF ]</a>
+    </div>
+
+    <div class="hint">site.com/?status=on &nbsp;·&nbsp; site.com/?status=off</div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const status = (params.get('status') || '').toLowerCase();
+    const text   = document.getElementById('statusText');
+
+    if (status === 'on') {
+      document.body.classList.replace('state-none', 'state-on');
+      document.getElementById('btnOn').classList.add('active-on');
+      text.textContent = 'ON';
+    } else if (status === 'off') {
+      document.body.classList.replace('state-none', 'state-off');
+      document.getElementById('btnOff').classList.add('active-off');
+      text.textContent = 'OFF';
+    }
+  </script>
+</body>
+</html>
