@@ -229,19 +229,35 @@
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const status = (params.get('status') || '').toLowerCase();
-    const text   = document.getElementById('statusText');
+const params = new URLSearchParams(window.location.search);
+const status = (params.get('status') || '').toLowerCase();
+const text = document.getElementById('statusText');
 
-    if (status === 'on') {
-      document.body.classList.replace('state-none', 'state-on');
-      document.getElementById('btnOn').classList.add('active-on');
-      text.textContent = 'ON';
-    } else if (status === 'off') {
-      document.body.classList.replace('state-none', 'state-off');
-      document.getElementById('btnOff').classList.add('active-off');
-      text.textContent = 'OFF';
+const ARDUINO_IP = "http://192.168.1.123";
+
+document.getElementById("btnOn").addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    try {
+        await fetch(`${ARDUINO_IP}/close`);
+        text.textContent = "ON";
+        document.body.className = "state-on";
+    } catch(err) {
+        console.error(err);
     }
-  </script>
+});
+
+document.getElementById("btnOff").addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    try {
+        await fetch(`${ARDUINO_IP}/open`);
+        text.textContent = "OFF";
+        document.body.className = "state-off";
+    } catch(err) {
+        console.error(err);
+    }
+});
+</script>
 </body>
 </html>
