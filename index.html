@@ -233,7 +233,27 @@ const params = new URLSearchParams(window.location.search);
 const status = (params.get('status') || '').toLowerCase();
 const text = document.getElementById('statusText');
 
-const ARDUINO_IP = "http://192.168.1.123";
+document.getElementById("btnOn").addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    await fetch("http://localhost:3000/api/claw", {
+        method: "POST"
+    });
+
+    text.textContent = "ON";
+    document.body.className = "state-on";
+});
+
+document.getElementById("btnOff").addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    await fetch("http://localhost:3000/api/claw", {
+        method: "POST"
+    });
+
+    text.textContent = "OFF";
+    document.body.className = "state-off";
+});
 
 document.getElementById("btnOn").addEventListener("click", async (e) => {
     e.preventDefault();
