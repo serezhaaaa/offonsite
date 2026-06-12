@@ -8,8 +8,6 @@
 #define UP_DOWN_PIN 9
 #define FW_BW_PIN 10
 
-
-// Настройка программного Serial для связи с ESP8266 (D4 -> TX, D5 -> RX)
 SoftwareSerial softserial(4, 5); 
 
 char ssid[] = "MERCUSYS_D2B9";     
